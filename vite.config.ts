@@ -12,19 +12,6 @@ export default defineConfig({
 
   server: {
     port: 3809,
-
-    proxy: {
-      "/api": {
-        target: "https://klop-car-sale-demo.net",
-        changeOrigin: true,
-      },
-
-      "/hubs": {
-        target: "https://klop-car-sale-demo.net",
-        changeOrigin: true,
-        ws: true,
-      },
-    },
   },
 
   resolve: {
