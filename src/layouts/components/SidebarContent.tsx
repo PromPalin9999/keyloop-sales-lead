@@ -1,68 +1,101 @@
 import {
+  CloseOutlined,
   LogoutOutlined,
-  QuestionCircleOutlined,
+  MoonOutlined,
+  MoreOutlined,
+  SunOutlined,
   UserOutlined,
-} from "@ant-design/icons";
-import { Avatar } from "antd";
-import { memo } from "react";
-import { useLogout } from "@/apis";
-import { KlText } from "@/components/base";
-import { Role, ROUTES } from "@/constants";
-import { useAuthStore } from "@/store";
-import { NavigationList } from "./NavigationList";
+} from '@ant-design/icons';
+import { Avatar, Dropdown, Row, type MenuProps } from 'antd';
+import { memo } from 'react';
+import { NavigationList } from './NavigationList';
+import { useLogout } from '@/apis';
+import { KlButton, KlText } from '@/components/base';
+import { ROUTES } from '@/constants';
+import { useAuthStore, useThemeStore } from '@/store';
 
-// Shared brand + nav + footer content, rendered as-is inside the fixed
-// desktop <aside> (Sidebar) and inside the mobile <Drawer> (MobileSidebar).
-export const SidebarContent = memo(() => {
+interface SidebarContentProps {
+  closeMobileSidebar?: () => void;
+}
+
+export const SidebarContent = memo((props: SidebarContentProps) => {
+  const { closeMobileSidebar } = props;
   const profile = useAuthStore((state) => state.profile);
   const { logout, isLoggingOut } = useLogout();
+  const isDark = useThemeStore((state) => state.isDark);
+  const setIsDark = useThemeStore((state) => state.setIsDark);
 
-  const roleLabel =
-    profile?.role === Role.Admin ? "Admin View" : "Salesperson View";
+  const accountMenuItems: MenuProps['items'] = [
+    {
+      key: 'theme',
+      label: isDark ? 'Light Mode' : 'Dark Mode',
+      icon: isDark ? <SunOutlined /> : <MoonOutlined />,
+      onClick: () => setIsDark(!isDark),
+    },
+    { type: 'divider' },
+    {
+      key: 'signout',
+      label: 'Sign Out',
+      icon: <LogoutOutlined />,
+      danger: true,
+      disabled: isLoggingOut,
+      onClick: () => logout(),
+    },
+  ];
 
   return (
-    <div className="flex h-full flex-col px-4 py-5">
-      <a href={ROUTES.LEADS} className="mb-6 flex items-center gap-2 px-1">
-        <img src="/kl-avt.png" alt="logo" className="h-7 w-auto" />
-        <div className="min-w-0">
-          <KlText strong className="block truncate !text-base">
-            Keyloop Sales
-          </KlText>
-          <KlText type="secondary" className="block truncate !text-xs">
-            {roleLabel}
-          </KlText>
-        </div>
-      </a>
+    <div className='flex h-full flex-col px-4 py-2'>
+      <Row justify='space-between' align='middle' className='mb-6!'>
+        <a href={ROUTES.DASHBOARD} className='flex items-center gap-2 px-1'>
+          <img src='/kl-avt.png' alt='logo' className='h-7 w-auto' />
+          <div className='min-w-0'>
+            <KlText strong className='block truncate text-base!'>
+              Keyloop Company
+            </KlText>
+            <KlText type='secondary' className='block truncate text-xs!'>
+              Sales Lead Manager
+            </KlText>
+          </div>
+        </a>
+
+        {closeMobileSidebar && (
+          <KlButton
+            type='text'
+            shape='circle'
+            aria-label='Close menu'
+            icon={<CloseOutlined />}
+            onClick={closeMobileSidebar}
+          />
+        )}
+      </Row>
 
       <NavigationList />
 
-      <div className="mt-4 border-t border-text-200/20 pt-4">
-        <button
-          type="button"
-          className="mb-1 flex w-full items-center gap-x-3 rounded-lg px-3 py-2 text-left !text-text-500 transition hover:!bg-background-100 dark:hover:!bg-background-100/10"
+      <div className='mt-4 border-t border-text-200/20 pt-4'>
+        <Dropdown
+          menu={{ items: accountMenuItems }}
+          trigger={['click']}
+          placement='top'
         >
-          <QuestionCircleOutlined /> Support
-        </button>
-        <button
-          type="button"
-          disabled={isLoggingOut}
-          onClick={() => logout()}
-          className="flex w-full items-center gap-x-3 rounded-lg px-3 py-2 text-left !text-error transition hover:!bg-error/10"
-        >
-          <LogoutOutlined /> Sign Out
-        </button>
-
-        <div className="mt-3 flex items-center gap-2 rounded-lg px-3 py-2">
-          <Avatar icon={<UserOutlined />} />
-          <div className="min-w-0">
-            <KlText strong className="block truncate !text-sm">
-              {profile?.full_name || "--"}
-            </KlText>
-            <KlText type="secondary" className="block truncate !text-xs">
-              {roleLabel.replace(" View", "")}
-            </KlText>
-          </div>
-        </div>
+          <KlButton
+            type='default'
+            className='flex! w-full! items-center! gap-2! rounded-lg! px-3! py-7! transition'
+          >
+            <Avatar icon={<UserOutlined />} />
+            <div className='min-w-0 flex-1'>
+              <KlText strong className='block truncate text-sm! text-start!'>
+                {profile?.full_name || '--'}
+              </KlText>
+              <KlText
+                type='secondary'
+                className='block truncate text-xs! text-start!'
+              >
+                {profile?.email}
+              </KlText>
+            </div>
+            <MoreOutlined className='text-text-400' />
+          </KlButton>
+        </Dropdown>
       </div>
     </div>
   );

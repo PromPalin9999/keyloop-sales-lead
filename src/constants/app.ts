@@ -2,4 +2,4 @@ export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const IS_SANDBOX =
-  import.meta.env.VITE_IS_SANDBOX.toLocaleLowerCase() === 'true';
+  (import.meta.env.VITE_IS_SANDBOX ?? '').toLocaleLowerCase() === 'true';

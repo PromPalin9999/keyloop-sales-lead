@@ -1,2 +1,1 @@
-export * from './useUsers'
-export * from './useStaffDirectory'
+export * from './useStaffDirectory';

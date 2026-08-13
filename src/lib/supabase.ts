@@ -1,10 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
-import localforage from "localforage";
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/constants";
-import { decryptData, encryptData } from "@/utils";
+import { createClient } from '@supabase/supabase-js';
+import localforage from 'localforage';
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from '@/constants';
+import { decryptData, encryptData } from '@/utils';
 
-// Supabase persists the session itself - we only swap *where* it persists
-// to (encrypted localforage) instead of the default window.localStorage.
 const supabaseAuthStorage = {
   getItem: async (key: string) => {
     const raw = await localforage.getItem<string>(key);
@@ -21,6 +19,6 @@ const supabaseAuthStorage = {
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     storage: supabaseAuthStorage,
-    storageKey: "supabaseAuthToken",
+    storageKey: 'supabaseAuthToken',
   },
 });

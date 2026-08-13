@@ -1,7 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
-import { queryClient, supabase } from "@/lib";
-import type { MutationConfig, QueryError } from "@/types";
-import type { Lead, UpdateNextFollowUpPayload } from "./types";
+import { useMutation } from '@tanstack/react-query';
+import type { Lead, UpdateNextFollowUpPayload } from './types';
+import { LEADS_KEY, queryClient, queryKeys, supabase } from '@/lib';
+import type { MutationConfig, QueryError } from '@/types';
 
 const updateNextFollowUp = async (
   payload: UpdateNextFollowUpPayload,
@@ -9,10 +9,10 @@ const updateNextFollowUp = async (
   const { id, ...rest } = payload;
 
   const { data, error } = await supabase
-    .from("leads")
+    .from('leads')
     .update(rest)
-    .eq("id", id)
-    .select("*")
+    .eq('id', id)
+    .select('*')
     .single();
 
   if (error) throw error;
@@ -30,8 +30,10 @@ export const useUpdateNextFollowUp = (useProps?: UpdateNextFollowUpOptions) => {
     mutationFn: updateNextFollowUp,
     ...config,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: ["leads", "detail", variables.id] });
-      queryClient.invalidateQueries({ queryKey: ["leads", "list"] });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.leadDetails(variables.id),
+      });
+      queryClient.invalidateQueries({ queryKey: [LEADS_KEY] });
       config?.onSuccess?.(data, variables, context);
     },
   });

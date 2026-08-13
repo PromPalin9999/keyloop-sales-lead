@@ -1,7 +1,7 @@
-import { Result } from "antd";
-import { Component, type ReactNode } from "react";
-import { ROUTES } from "@/constants";
-import { KlButton } from "./base";
+import { Result } from 'antd';
+import { Component, type ReactNode } from 'react';
+import { KlButton } from './base';
+import { ROUTES } from '@/constants';
 
 interface Props {
   fallback?: ReactNode;
@@ -30,14 +30,11 @@ class Boundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error("[ErrorBoundary caught]:", error, info);
+    console.error('[ErrorBoundary caught]:', error, info);
   }
 
   handleRetry = () => {
-    this.setState({
-      hasError: false,
-      error: undefined,
-    });
+    window.location.reload();
   };
 
   render() {
@@ -45,15 +42,15 @@ class Boundary extends Component<Props, State> {
       return (
         this.props.fallback || (
           <Result
-            status="error"
-            title="Have an Error"
-            subTitle={this.state.error?.message || "Unknown Error"}
+            status='error'
+            title='Have an Error'
+            subTitle={this.state.error?.message || 'Unknown Error'}
             extra={
               <>
                 <KlButton onClick={this.handleRetry}>Retry</KlButton>
 
                 <KlButton
-                  type="primary"
+                  type='primary'
                   onClick={() => {
                     window.location.href = ROUTES.DASHBOARD;
                   }}

@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore } from 'react';
 
 const bp = { sm: 576, md: 768, lg: 992, xl: 1200, xxl: 1600 } as const;
 
@@ -22,7 +22,7 @@ let mqls: {
 const subscribers = new Set<() => void>();
 
 function ensureMqls() {
-  if (typeof window === "undefined") return null;
+  if (typeof window === 'undefined') return null;
   if (mqls) return mqls;
   mqls = {
     smUp: window.matchMedia(`(min-width: ${bp.sm}px)`),
@@ -41,7 +41,7 @@ function ensureMqls() {
 }
 
 function add(mql: MediaQueryList, cb: () => void) {
-  if (mql.addEventListener) mql.addEventListener("change", cb);
+  if (mql.addEventListener) mql.addEventListener('change', cb);
   else mql.addListener(cb);
 }
 
@@ -91,7 +91,7 @@ function maybeUpdateSnapshot() {
   }
 }
 
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
   ensureMqls();
   SNAPSHOT = compute();
 }

@@ -1,8 +1,8 @@
-import { useThemeStore } from "@/store";
-import { readThemeVariables } from "@/utils";
-import { ConfigProvider as AntConfigProvider, theme as antTheme } from "antd";
-import type { ThemeConfig } from "antd/lib";
-import { useMemo, type ReactNode } from "react";
+import { ConfigProvider as AntConfigProvider, theme as antTheme } from 'antd';
+import type { ThemeConfig } from 'antd/lib';
+import { useMemo, type ReactNode } from 'react';
+import { useThemeStore } from '@/store';
+import { readThemeVariables } from '@/utils';
 
 interface ConfigProviderProps {
   children: ReactNode;
@@ -33,12 +33,12 @@ export const ConfigProvider = (props: ConfigProviderProps) => {
           contentBg: variables.background,
         },
         Dropdown: { colorBgElevated: variables.primary },
-        Tabs: { horizontalItemPaddingLG: "0 0 16px" },
+        Tabs: { horizontalItemPaddingLG: '0 0 16px' },
         Collapse: { headerBg: variables.primary },
         Popover: { colorBgElevated: variables.primary },
         Drawer: {
           colorBgElevated: variables.primary,
-          colorSplit: "transparent",
+          colorSplit: 'transparent',
           paddingLG: 0,
         },
       },

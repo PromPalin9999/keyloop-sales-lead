@@ -1,8 +1,8 @@
-import { FallbackLoading } from "@/components";
-import { ROUTES } from "@/constants";
-import { useAuthStore } from "@/store";
-import { Suspense } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Suspense } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { FallbackLoading } from '@/components';
+import { ROUTES } from '@/constants';
+import { useAuthStore } from '@/store';
 
 export const PublicLayout = () => {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);

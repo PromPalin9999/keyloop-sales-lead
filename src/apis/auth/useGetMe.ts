@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { supabase } from "@/lib";
-import { useAuthStore } from "@/store";
-import type { Role } from "@/constants";
+import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import type { Role } from '@/constants';
+import { queryKeys, supabase } from '@/lib';
+import { useAuthStore } from '@/store';
 
 export type Profile = {
   id: string;
@@ -14,7 +14,7 @@ export type Profile = {
 };
 
 async function fetchMe(): Promise<Profile> {
-  const { data, error } = await supabase.from("me").select("*").single();
+  const { data, error } = await supabase.from('me').select('*').single();
 
   if (error) throw error;
   return data;
@@ -26,7 +26,7 @@ export const useGetMe = () => {
   const setProfile = useAuthStore((state) => state.setProfile);
 
   const query = useQuery({
-    queryKey: ["me", userId],
+    queryKey: queryKeys.me(userId),
     queryFn: fetchMe,
     enabled: isLoggedIn && !!userId,
     staleTime: Infinity,

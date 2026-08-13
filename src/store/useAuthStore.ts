@@ -1,8 +1,8 @@
-import type { Session, User } from "@supabase/supabase-js";
-import { create } from "zustand";
-import type { Profile } from "@/apis";
-import { Role } from "@/constants";
-import { supabase } from "@/lib";
+import type { Session, User } from '@supabase/supabase-js';
+import { create } from 'zustand';
+import type { Profile } from '@/apis';
+import { Role } from '@/constants';
+import { supabase } from '@/lib';
 
 type AuthStoreState = {
   session: Session | null;
@@ -10,6 +10,7 @@ type AuthStoreState = {
   isLoggedIn: boolean;
   profile: Profile | null;
   isAdmin: boolean;
+  isSessionLoading: boolean;
 };
 
 interface AuthStore extends AuthStoreState {
@@ -23,6 +24,7 @@ const init: AuthStoreState = {
   isLoggedIn: false,
   profile: null,
   isAdmin: false,
+  isSessionLoading: true,
 };
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -32,6 +34,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       session,
       user: session?.user ?? null,
       isLoggedIn: !!session,
+      isSessionLoading: false,
       // A cleared session invalidates any previously loaded profile.
       ...(session ? {} : { profile: null, isAdmin: false }),
     })),
@@ -39,11 +42,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set(() => ({ profile, isAdmin: profile.role === Role.Admin })),
 }));
 
-// Bootstrap once on module load: hydrate from any session already persisted
-// (encrypted, via localforage - see src/lib/supabase.ts), then stay in sync
-// on every sign-in/out/refresh. supabase-js owns token persistence and
-// auto-refresh itself - this subscription only keeps this store's
-// session/user aligned with it.
 supabase.auth.getSession().then(({ data: { session } }) => {
   useAuthStore.getState().setSession(session);
 });

@@ -1,67 +1,68 @@
-import { DatePicker, Input } from "antd";
-import dayjs, { type Dayjs } from "dayjs";
-import { memo, useCallback, useEffect, useState } from "react";
-import { useUpdateNextFollowUp } from "@/apis";
-import { KlButton } from "@/components/base";
-import { notify } from "@/utils";
+import { DatePicker, Form, Input } from 'antd';
+import { type Dayjs } from 'dayjs';
+import { memo } from 'react';
+import { useUpdateNextFollowUp } from '@/apis';
+import { KlButton } from '@/components/base';
+import { notify } from '@/utils';
 
 interface NextFollowUpEditorProps {
   leadId: string;
-  nextFollowUpAt: string | null;
-  nextFollowUpNote: string | null;
 }
 
 export const NextFollowUpEditor = memo((props: NextFollowUpEditorProps) => {
-  const { leadId, nextFollowUpAt, nextFollowUpNote } = props;
-
-  const [date, setDate] = useState<Dayjs | null>(
-    nextFollowUpAt ? dayjs(nextFollowUpAt) : null,
-  );
-  const [note, setNote] = useState(nextFollowUpNote ?? "");
-
-  useEffect(() => {
-    setDate(nextFollowUpAt ? dayjs(nextFollowUpAt) : null);
-    setNote(nextFollowUpNote ?? "");
-  }, [nextFollowUpAt, nextFollowUpNote]);
+  const { leadId } = props;
+  const [form] = Form.useForm<FormValues>();
 
   const { updateNextFollowUp, isUpdatingNextFollowUp } = useUpdateNextFollowUp({
     config: {
-      onSuccess: () => notify.success("Next follow-up updated"),
+      onSuccess: () => {
+        form.resetFields();
+        notify.success('Next follow-up updated');
+      },
     },
   });
 
-  const handleSave = useCallback(() => {
+  const handleFinish = (values: FormValues) => {
     updateNextFollowUp({
       id: leadId,
-      next_follow_up_at: date ? date.toISOString() : null,
-      next_follow_up_note: note || null,
+      next_follow_up_at: values.date ? values.date.toISOString() : null,
+      next_follow_up_note: values.note || null,
     });
-  }, [leadId, date, note, updateNextFollowUp]);
+  };
 
   return (
-    <div className="flex flex-col gap-2">
-      <DatePicker
-        showTime
-        allowClear
-        className="w-full"
-        format="MMM D, YYYY hh:mm A"
-        value={date}
-        onChange={setDate}
-      />
-      <Input.TextArea
-        rows={2}
-        placeholder="Next follow-up note..."
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
-      />
-      <KlButton
-        type="primary"
-        loading={isUpdatingNextFollowUp}
-        onClick={handleSave}
-        className="self-start"
+    <div className='pb-3 pt-1'>
+      <Form
+        form={form}
+        layout='vertical'
+        onFinish={handleFinish}
+        className='flex flex-col gap-2'
       >
-        Save
-      </KlButton>
+        <Form.Item name='date' className='mb-0!'>
+          <DatePicker
+            showTime
+            allowClear
+            className='w-full'
+            format='MMM D, YYYY hh:mm A'
+          />
+        </Form.Item>
+        <Form.Item name='note' className='mb-0!'>
+          <Input.TextArea rows={5} placeholder='Next follow-up note...' />
+        </Form.Item>
+        <KlButton
+          type='primary'
+          htmlType='submit'
+          loading={isUpdatingNextFollowUp}
+          className='mt-4'
+        >
+          Submit
+        </KlButton>
+      </Form>
     </div>
   );
 });
+
+type FormValues = {
+  date: Dayjs | null;
+  note: string;
+};

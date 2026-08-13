@@ -1,13 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib";
-import type { QueryConfig, QueryError } from "@/types";
-import type { Lead } from "./types";
+import { useQuery } from '@tanstack/react-query';
+import type { Lead } from './types';
+import { queryKeys, supabase } from '@/lib';
+import type { QueryConfig, QueryError } from '@/types';
 
 async function fetchLead(id: string): Promise<Lead> {
   const { data, error } = await supabase
-    .from("leads")
-    .select("*")
-    .eq("id", id)
+    .from('leads')
+    .select('*')
+    .eq('id', id)
     .single();
 
   if (error) throw error;
@@ -19,7 +19,7 @@ export const useLead = (
   config?: QueryConfig<Lead, Lead, QueryError>,
 ) => {
   const query = useQuery({
-    queryKey: ["leads", "detail", id],
+    queryKey: queryKeys.leadDetails(id),
     queryFn: () => fetchLead(id as string),
     enabled: !!id,
     ...config,

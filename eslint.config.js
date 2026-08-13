@@ -1,5 +1,5 @@
 import js from "@eslint/js";
-import eslintPluginImport from "eslint-plugin-import";
+import eslintPluginImportX from "eslint-plugin-import-x";
 import eslintPluginPrettier from "eslint-plugin-prettier";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
@@ -19,7 +19,7 @@ export default tseslint.config(
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
       prettier: eslintPluginPrettier,
-      import: eslintPluginImport,
+      "import-x": eslintPluginImportX,
     },
     rules: {
       "react-hooks/rules-of-hooks": "error",
@@ -56,7 +56,7 @@ export default tseslint.config(
           ignoreRestSiblings: true,
         },
       ],
-      "import/order": [
+      "import-x/order": [
         "warn",
         {
           groups: [

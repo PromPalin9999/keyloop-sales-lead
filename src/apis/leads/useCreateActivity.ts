@@ -1,15 +1,15 @@
-import { useMutation } from "@tanstack/react-query";
-import { queryClient, supabase } from "@/lib";
-import type { MutationConfig, QueryError } from "@/types";
-import type { Activity, CreateActivityPayload } from "./types";
+import { useMutation } from '@tanstack/react-query';
+import type { Activity, CreateActivityPayload } from './types';
+import { LEADS_KEY, queryClient, queryKeys, supabase } from '@/lib';
+import type { MutationConfig, QueryError } from '@/types';
 
 const createActivity = async (
   payload: CreateActivityPayload,
 ): Promise<Activity> => {
   const { data, error } = await supabase
-    .from("activities")
+    .from('activities')
     .insert(payload)
-    .select("*")
+    .select('*')
     .single();
 
   if (error) throw error;
@@ -28,10 +28,10 @@ export const useCreateActivity = (useProps?: CreateActivityOptions) => {
     ...config,
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: ["leads", "activities", variables.lead_id],
+        queryKey: queryKeys.timeLineLeadAct(variables.lead_id),
       });
       queryClient.invalidateQueries({
-        queryKey: ["leads", "list"],
+        queryKey: [LEADS_KEY],
       });
       config?.onSuccess?.(data, variables, context);
     },

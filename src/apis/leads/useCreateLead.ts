@@ -1,14 +1,14 @@
-import { useMutation } from "@tanstack/react-query";
-import { LeadSource } from "@/constants";
-import { queryClient, supabase } from "@/lib";
-import type { MutationConfig, QueryError } from "@/types";
-import type { CreateLeadPayload, Lead } from "./types";
+import { useMutation } from '@tanstack/react-query';
+import type { CreateLeadPayload, Lead } from './types';
+import { LeadSource } from '@/constants';
+import { LEADS_KEY, queryClient, supabase } from '@/lib';
+import type { MutationConfig, QueryError } from '@/types';
 
 const createLead = async (payload: CreateLeadPayload): Promise<Lead> => {
   const { data, error } = await supabase
-    .from("leads")
+    .from('leads')
     .insert({ source: LeadSource.Manual, ...payload })
-    .select("*")
+    .select('*')
     .single();
 
   if (error) throw error;
@@ -26,7 +26,7 @@ export const useCreateLead = (useProps?: CreateLeadOptions) => {
     mutationFn: createLead,
     ...config,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: ["leads", "list"] });
+      queryClient.invalidateQueries({ queryKey: [LEADS_KEY] });
       config?.onSuccess?.(data, variables, context);
     },
   });

@@ -1,7 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
-import type { AuthTokenResponsePassword } from "@supabase/supabase-js";
-import { supabase } from "@/lib";
-import type { MutationConfig, QueryError } from "@/types";
+import type { AuthTokenResponsePassword } from '@supabase/supabase-js';
+import { useMutation } from '@tanstack/react-query';
+import { supabase } from '@/lib';
+import type { MutationConfig, QueryError } from '@/types';
 
 export type LoginPayload = {
   email: string;
@@ -15,7 +15,7 @@ export type LoginResponse = {
   fullName: string | null;
 };
 
-type LoginRes = AuthTokenResponsePassword["data"];
+type LoginRes = AuthTokenResponsePassword['data'];
 
 const login = async (payload: LoginPayload): Promise<LoginRes> => {
   const { data, error } = await supabase.auth.signInWithPassword(payload);

@@ -1,6 +1,6 @@
-import { message } from "antd";
-import { useEffect, type ReactNode } from "react";
-import { type ICustomerMessageProps, MESSAGE_EVENT_NAME } from "@/utils";
+import { message } from 'antd';
+import { useEffect, type ReactNode } from 'react';
+import { type ICustomerMessageProps, MESSAGE_EVENT_NAME } from '@/utils';
 
 type ShorthandMessageFn = (
   content: ReactNode,
@@ -20,7 +20,12 @@ const Message = () => {
       const content = e.detail.content as ReactNode;
 
       if (icon) {
-        api[type]({ content, duration: duration as number | undefined, onClose, icon });
+        api[type]({
+          content,
+          duration: duration as number | undefined,
+          onClose,
+          icon,
+        });
       } else {
         (api[type] as ShorthandMessageFn)(content, duration, onClose);
       }

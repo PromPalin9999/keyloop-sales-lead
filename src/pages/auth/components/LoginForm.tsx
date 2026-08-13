@@ -1,16 +1,16 @@
-import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import type { AuthTokenResponsePassword } from "@supabase/supabase-js";
-import { Alert, Checkbox, Form, Input } from "antd";
-import { useCallback, useState } from "react";
-import { useLogin, type LoginPayload } from "@/apis";
-import { KlButton, KlTitle } from "@/components";
-import type { QueryError } from "@/types";
-import { notify } from "@/utils";
-import { IS_SANDBOX } from "@/constants";
+import { LockOutlined, MailOutlined } from '@ant-design/icons';
+import type { AuthTokenResponsePassword } from '@supabase/supabase-js';
+import { Alert, Checkbox, Form, Input } from 'antd';
+import { useCallback, useState } from 'react';
+import { useLogin, type LoginPayload } from '@/apis';
+import { KlButton, KlTitle } from '@/components';
+import { IS_SANDBOX } from '@/constants';
+import type { QueryError } from '@/types';
+import { notify } from '@/utils';
 
-type LoginRes = AuthTokenResponsePassword["data"];
+type LoginRes = AuthTokenResponsePassword['data'];
 
-const REMEMBERED_EMAIL_KEY = "rememberedEmail";
+const REMEMBERED_EMAIL_KEY = 'rememberedEmail';
 
 export const LoginForm = () => {
   const [form] = Form.useForm<LoginPayload>();
@@ -30,8 +30,8 @@ export const LoginForm = () => {
       form.resetFields();
       setErrorMessage(null);
       notify.success(
-        "Logged in successfully",
-        "Welcome back to the dashboard.",
+        'Logged in successfully',
+        'Welcome back to the Keyloop Sales Lead!!',
       );
     },
     [isRememberMe, form],
@@ -56,36 +56,36 @@ export const LoginForm = () => {
   return (
     <Form
       form={form}
-      layout="vertical"
-      size="large"
+      layout='vertical'
+      size='large'
       initialValues={{ email: savedEmail }}
-      className="relative w-80 max-w-full"
+      className='relative w-80 max-w-full'
       onFinish={handleLogin}
     >
-      <KlTitle level={2} className="mt-2 text-center">
+      <KlTitle level={2} className='mt-2 text-center'>
         Sign In
       </KlTitle>
       <Form.Item
-        name="email"
-        rules={[{ required: true, message: "Please enter your email" }]}
-        className="mb-2!"
+        name='email'
+        rules={[{ required: true, message: 'Please enter your email' }]}
+        className='mb-2!'
       >
         <Input
           prefix={<MailOutlined />}
-          placeholder="Email"
+          placeholder='Email'
           autoFocus={!savedEmail}
-          autoComplete="none"
+          autoComplete='none'
           // autoCapitalize="none"
         />
       </Form.Item>
 
       <Form.Item
-        name="password"
-        rules={[{ required: true, message: "Please enter your password" }]}
+        name='password'
+        rules={[{ required: true, message: 'Please enter your password' }]}
         extra={
           <Checkbox
             checked={isRememberMe}
-            className="mt-2!"
+            className='mt-2!'
             onChange={(e) => setIsRememberMe(e.target.checked)}
           >
             Remember me
@@ -94,27 +94,27 @@ export const LoginForm = () => {
       >
         <Input.Password
           prefix={<LockOutlined />}
-          placeholder="Password"
+          placeholder='Password'
           autoFocus={!!savedEmail}
         />
       </Form.Item>
 
       {errorMessage && !isLoggingIn && (
         <Form.Item>
-          <Alert type="error" showIcon message={errorMessage} />
+          <Alert type='error' showIcon message={errorMessage} />
         </Form.Item>
       )}
 
       {IS_SANDBOX && (
-        <div className="mb-4 grid grid-cols-2 gap-x-2">
+        <div className='mb-4 grid grid-cols-2 gap-x-2'>
           <KlButton
-            variant="dashed"
-            color="magenta"
-            size="middle"
+            variant='dashed'
+            color='magenta'
+            size='middle'
             onClick={() => {
               form.setFieldsValue({
-                email: "ywwh5nh85o@ozsaip.com",
-                password: "KeyloopSales@9999",
+                email: 'ywwh5nh85o@ozsaip.com',
+                password: 'KeyloopSales@9999',
               });
               form.submit();
             }}
@@ -122,13 +122,13 @@ export const LoginForm = () => {
             DEV ADMIN LOGIN
           </KlButton>
           <KlButton
-            variant="dashed"
-            color="magenta"
-            size="middle"
+            variant='dashed'
+            color='magenta'
+            size='middle'
             onClick={() => {
               form.setFieldsValue({
-                email: "sale1@example.com",
-                password: "KeyloopSales@9999",
+                email: 'sale1@example.com',
+                password: 'KeyloopSales@9999',
               });
               form.submit();
             }}
@@ -138,8 +138,8 @@ export const LoginForm = () => {
         </div>
       )}
 
-      <Form.Item className="mb-0!">
-        <KlButton type="primary" htmlType="submit" block loading={isLoggingIn}>
+      <Form.Item className='mb-0!'>
+        <KlButton type='primary' htmlType='submit' block loading={isLoggingIn}>
           Log in
         </KlButton>
       </Form.Item>

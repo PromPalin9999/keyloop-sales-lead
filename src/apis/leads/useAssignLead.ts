@@ -1,7 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
-import { queryClient, supabase } from "@/lib";
-import type { MutationConfig, QueryError } from "@/types";
-import type { Lead } from "./types";
+import { useMutation } from '@tanstack/react-query';
+import type { Lead } from './types';
+import { LEADS_KEY, queryClient, queryKeys, supabase } from '@/lib';
+import type { MutationConfig, QueryError } from '@/types';
 
 export type AssignLeadPayload = {
   id: string;
@@ -10,10 +10,10 @@ export type AssignLeadPayload = {
 
 const assignLead = async (payload: AssignLeadPayload): Promise<Lead> => {
   const { data, error } = await supabase
-    .from("leads")
+    .from('leads')
     .update({ assigned_to: payload.assigned_to })
-    .eq("id", payload.id)
-    .select("*")
+    .eq('id', payload.id)
+    .select('*')
     .single();
 
   if (error) throw error;
@@ -31,8 +31,10 @@ export const useAssignLead = (useProps?: AssignLeadOptions) => {
     mutationFn: assignLead,
     ...config,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: ["leads", "detail", variables.id] });
-      queryClient.invalidateQueries({ queryKey: ["leads", "list"] });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.leadDetails(variables.id),
+      });
+      queryClient.invalidateQueries({ queryKey: [LEADS_KEY] });
       config?.onSuccess?.(data, variables, context);
     },
   });

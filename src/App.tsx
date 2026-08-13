@@ -1,7 +1,7 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { Suspense, lazy, memo } from 'react';
-import { ConfigProvider, ErrorBoundary } from '@/components';
 import { queryClient } from './lib';
+import { ConfigProvider, ErrorBoundary } from '@/components';
 
 const AppRouter = lazy(() => import('@/routes/AppRouter'));
 const Message = lazy(() => import('@/components/Message'));

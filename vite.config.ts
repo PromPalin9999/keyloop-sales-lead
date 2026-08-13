@@ -20,23 +20,23 @@ export default defineConfig({
     },
   },
 
-  // test: {
-  //   environment: "jsdom",
+  test: {
+    environment: "jsdom",
 
-  //   globals: true,
+    globals: true,
 
-  //   setupFiles: "./vitest.setup.ts",
+    setupFiles: "./vitest.setup.ts",
 
-  //   css: true,
+    css: true,
 
-  //   coverage: {
-  //     provider: "v8",
+    coverage: {
+      provider: "v8",
 
-  //     reporter: ["text", "json", "html"],
+      reporter: ["text", "json", "html"],
 
-  //     include: ["src/**/*.{ts,tsx}"],
+      include: ["src/**/*.{ts,tsx}"],
 
-  //     exclude: ["src/main.tsx", "src/vite-env.d.ts"],
-  //   },
-  // },
+      exclude: ["src/main.tsx", "src/vite-env.d.ts"],
+    },
+  },
 });

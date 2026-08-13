@@ -1,4 +1,5 @@
-import type { ActivityType, LeadSource, LeadStatus } from "@/constants";
+import type { ActivityType, LeadSource, LeadStatus } from '@/constants';
+import type { FilterParam, SortParam } from '@/types';
 
 export type Lead = {
   id: string;
@@ -10,9 +11,12 @@ export type Lead = {
   source: LeadSource;
   status: LeadStatus;
   assigned_to: string | null;
+  assigned_to_name: string | null;
   created_by: string | null;
   next_follow_up_at: string | null;
   next_follow_up_note: string | null;
+  next_follow_up_by: string | null;
+  next_follow_up_by_name: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -34,21 +38,18 @@ export type Activity = {
   note: string | null;
   occurred_at: string;
   created_by: string | null;
+  created_by_name: string | null;
   created_at: string;
 };
 
-export type LeadListSortField =
-  | "created_at"
-  | "next_follow_up_at"
-  | "customer_name"
-  | "status";
+export const DEFAULT_LEADS_SORT: SortParam<Lead>[] = [
+  { key: 'created_at', direction: 'desc' },
+];
 
 export type LeadListParams = {
   search?: string;
-  status?: LeadStatus[];
-  assignedTo?: string;
-  sortBy?: LeadListSortField;
-  sortDir?: "asc" | "desc";
+  filters?: FilterParam<Lead>[];
+  sorts?: SortParam<Lead>[];
   page: number;
   pageSize: number;
 };
@@ -64,12 +65,12 @@ export type CreateLeadPayload = {
   phone?: string | null;
   vehicle_interest: string;
   message?: string | null;
-  source?: LeadSource;
+  assigned_to?: string | null;
 };
 
 export type CreateActivityPayload = {
   lead_id: string;
-  type: Exclude<ActivityType, "LEAD_RECEIVED">;
+  type: Exclude<ActivityType, 'LEAD_RECEIVED'>;
   note?: string | null;
   occurred_at?: string;
 };

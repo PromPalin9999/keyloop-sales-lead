@@ -1,5 +1,5 @@
-import { memo } from "react";
-import { LEAD_STATUS_META, type LeadStatus } from "@/constants";
+import { memo } from 'react';
+import { LEAD_STATUS_META, type LeadStatus } from '@/constants';
 
 interface StatusTagProps {
   status: LeadStatus;

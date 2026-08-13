@@ -1,97 +1,136 @@
-import { FilterOutlined, SearchOutlined, SortAscendingOutlined } from "@ant-design/icons";
-import { Checkbox, Dropdown, Input, Popover, Select, type MenuProps } from "antd";
-import { memo } from "react";
-import type { StaffMember } from "@/apis";
-import { KlButton, KlText } from "@/components/base";
-import { LEAD_STATUS_META, LEAD_STATUS_OPTIONS, type LeadStatus } from "@/constants";
-import type { LeadListSortField } from "@/apis";
+import {
+  FilterOutlined,
+  SearchOutlined,
+  SortAscendingOutlined,
+} from '@ant-design/icons';
+import {
+  Checkbox,
+  Dropdown,
+  Input,
+  Popover,
+  Select,
+  type MenuProps,
+} from 'antd';
+import { memo } from 'react';
+import type { Lead, StaffMember } from '@/apis';
+import { KlButton, KlText } from '@/components/base';
+import {
+  LEAD_STATUS_META,
+  LEAD_STATUS_OPTIONS,
+  type LeadStatus,
+} from '@/constants';
+import type { FilterParam, SortParam } from '@/types';
 
-type SortValue = { sortBy: LeadListSortField; sortDir: "asc" | "desc" };
-
-const SORT_OPTIONS: Array<SortValue & { label: string }> = [
-  { label: "Received: Newest first", sortBy: "created_at", sortDir: "desc" },
-  { label: "Received: Oldest first", sortBy: "created_at", sortDir: "asc" },
-  { label: "Next follow-up: Soonest", sortBy: "next_follow_up_at", sortDir: "asc" },
-  { label: "Customer name: A-Z", sortBy: "customer_name", sortDir: "asc" },
-  { label: "Status", sortBy: "status", sortDir: "asc" },
+const SORT_OPTIONS: Array<SortParam<Lead> & { label: string }> = [
+  { label: 'Received: Newest first', key: 'created_at', direction: 'desc' },
+  { label: 'Received: Oldest first', key: 'created_at', direction: 'asc' },
+  {
+    label: 'Next follow-up: Soonest',
+    key: 'next_follow_up_at',
+    direction: 'asc',
+  },
+  { label: 'Customer name: A-Z', key: 'customer_name', direction: 'asc' },
+  { label: 'Status', key: 'status', direction: 'asc' },
 ];
 
 interface LeadsTableHeaderProps {
   search: string;
   onSearchChange: (value: string) => void;
-  statusFilter: LeadStatus[];
-  onStatusFilterChange: (value: LeadStatus[]) => void;
+  filters: FilterParam<Lead>[];
+  addOrUpdateFilters: (next: FilterParam<Lead>) => void;
+  removeFilter: (key: keyof Lead) => void;
   isAdmin: boolean;
-  ownerFilter: string | undefined;
-  onOwnerFilterChange: (value: string | undefined) => void;
   salespeople: StaffMember[];
-  sort: SortValue;
-  onSortChange: (value: SortValue) => void;
+  sorts: SortParam<Lead>[] | undefined;
+  onSortChange: (value: SortParam<Lead>[]) => void;
 }
 
 export const LeadsTableHeader = memo((props: LeadsTableHeaderProps) => {
   const {
     search,
     onSearchChange,
-    statusFilter,
-    onStatusFilterChange,
+    filters,
+    addOrUpdateFilters,
+    removeFilter,
     isAdmin,
-    ownerFilter,
-    onOwnerFilterChange,
     salespeople,
-    sort,
+    sorts,
     onSortChange,
   } = props;
 
-  const activeFilterCount = statusFilter.length + (ownerFilter ? 1 : 0);
+  const statusFilter =
+    (filters.find((f) => f.key === 'status')?.value as LeadStatus[]) ?? [];
+  const ownerFilter = filters.find((f) => f.key === 'assigned_to')?.value as
+    string | undefined;
 
-  const sortMenuItems: MenuProps["items"] = SORT_OPTIONS.map((option) => ({
-    key: `${option.sortBy}:${option.sortDir}`,
+  const activeFilterCount = statusFilter.length + (ownerFilter ? 1 : 0);
+  const activeSort = sorts?.[0];
+
+  const sortMenuItems: MenuProps['items'] = SORT_OPTIONS.map((option) => ({
+    key: `${option.key}:${option.direction}`,
     label: option.label,
-    onClick: () => onSortChange({ sortBy: option.sortBy, sortDir: option.sortDir }),
+    onClick: () =>
+      onSortChange([{ key: option.key, direction: option.direction }]),
   }));
 
   const filterContent = (
-    <div className="w-64">
-      <KlText strong className="mb-2 block">
-        Status
-      </KlText>
-      <Checkbox.Group
-        className="mb-3 flex flex-col gap-1"
-        value={statusFilter}
-        onChange={(values) => onStatusFilterChange(values as LeadStatus[])}
-        options={LEAD_STATUS_OPTIONS.map((status) => ({
-          label: LEAD_STATUS_META[status].label,
-          value: status,
-        }))}
-      />
-
-      {isAdmin && (
-        <>
-          <KlText strong className="mb-2 block">
-            Owner
-          </KlText>
-          <Select
-            allowClear
-            className="mb-2 w-full"
-            placeholder="All salespeople"
-            value={ownerFilter}
-            onChange={onOwnerFilterChange}
-            options={salespeople.map((person) => ({
-              label: person.full_name || person.id,
-              value: person.id,
-            }))}
-          />
-        </>
-      )}
+    <div className='pb-1!'>
+      <div>
+        {isAdmin && (
+          <>
+            <KlText strong className='mb-2 block'>
+              Owner
+            </KlText>
+            <Select
+              allowClear
+              className='mb-3! w-full'
+              placeholder='All Sales'
+              value={ownerFilter}
+              onChange={(value) =>
+                value
+                  ? addOrUpdateFilters({
+                      key: 'assigned_to',
+                      operator: 'eq',
+                      value,
+                    })
+                  : removeFilter('assigned_to')
+              }
+              options={salespeople.map((person) => ({
+                label: person.full_name || person.id,
+                value: person.id,
+              }))}
+            />
+          </>
+        )}
+      </div>
+      <div>
+        <KlText strong className='block'>
+          Status
+        </KlText>
+        <Checkbox.Group
+          className='mb-3 flex flex-col gap-1'
+          value={statusFilter}
+          onChange={(values) =>
+            addOrUpdateFilters({
+              key: 'status',
+              operator: 'in',
+              value: values as LeadStatus[],
+            })
+          }
+          options={LEAD_STATUS_OPTIONS.map((status) => ({
+            label: LEAD_STATUS_META[status].label,
+            value: status,
+          }))}
+        />
+      </div>
 
       {activeFilterCount > 0 && (
         <KlButton
-          type="link"
-          className="px-0!"
+          type='primary'
+          className='mt-5! w-full!'
           onClick={() => {
-            onStatusFilterChange([]);
-            onOwnerFilterChange(undefined);
+            removeFilter('status');
+            removeFilter('assigned_to');
           }}
         >
           Clear filters
@@ -101,26 +140,38 @@ export const LeadsTableHeader = memo((props: LeadsTableHeaderProps) => {
   );
 
   return (
-    <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center">
+    <div className='mb-4 flex flex-col gap-3 md:flex-row md:items-center'>
       <Input
         allowClear
-        size="large"
-        className="md:max-w-md"
-        placeholder="Search leads, vehicles, or contacts..."
-        prefix={<SearchOutlined className="text-text-400" />}
+        size='large'
+        className='md:max-w-md'
+        placeholder='Search leads, vehicles, or contacts...'
+        prefix={<SearchOutlined className='text-text-400' />}
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
       />
 
-      <div className="flex gap-2 md:ml-auto">
-        <Popover content={filterContent} trigger="click" placement="bottomRight">
-          <KlButton size="large" icon={<FilterOutlined />}>
-            Filter{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
+      <div className='flex gap-2 md:ml-auto'>
+        <Popover
+          content={filterContent}
+          trigger='click'
+          placement='bottomRight'
+        >
+          <KlButton size='large' icon={<FilterOutlined />}>
+            Filter{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
           </KlButton>
         </Popover>
 
-        <Dropdown menu={{ items: sortMenuItems, selectedKeys: [`${sort.sortBy}:${sort.sortDir}`] }} trigger={["click"]}>
-          <KlButton size="large" icon={<SortAscendingOutlined />}>
+        <Dropdown
+          menu={{
+            items: sortMenuItems,
+            selectedKeys: activeSort
+              ? [`${activeSort.key}:${activeSort.direction}`]
+              : [],
+          }}
+          trigger={['click']}
+        >
+          <KlButton size='large' icon={<SortAscendingOutlined />}>
             Sort
           </KlButton>
         </Dropdown>

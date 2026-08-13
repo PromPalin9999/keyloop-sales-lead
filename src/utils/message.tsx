@@ -3,18 +3,18 @@ import {
   CloseCircleFilled,
   ExclamationCircleFilled,
   InfoCircleFilled,
-} from "@ant-design/icons";
-import { type JointContent } from "antd/es/message/interface";
-import type { ReactNode } from "react";
-import { KlText, KlTitle } from "@/components/base";
+} from '@ant-design/icons';
+import { type JointContent } from 'antd/es/message/interface';
+import type { ReactNode } from 'react';
+import { KlText, KlTitle } from '@/components/base';
 
-export const MESSAGE_EVENT_NAME = "app-message";
+export const MESSAGE_EVENT_NAME = 'app-message';
 export enum MESSAGE_TYPES {
-  SUCCESS = "success",
-  ERROR = "error",
-  INFO = "info",
-  WARNING = "warning",
-  LOADING = "loading",
+  SUCCESS = 'success',
+  ERROR = 'error',
+  INFO = 'info',
+  WARNING = 'warning',
+  LOADING = 'loading',
 }
 
 export interface ICustomerMessageProps {
@@ -73,7 +73,7 @@ export const message = {
   },
 };
 
-type NotifyType = "success" | "error" | "warning" | "info";
+type NotifyType = 'success' | 'error' | 'warning' | 'info';
 
 const NOTIFY_ICONS: Record<NotifyType, ReactNode> = {
   success: <CheckCircleFilled />,
@@ -87,14 +87,14 @@ const buildNotifyContent = (
   title: string,
   description?: string,
 ) => (
-  <div className="text-left">
-    <KlTitle level={5} className="mb-0! flex items-center gap-2">
+  <div className='text-left'>
+    <KlTitle level={5} className='mb-0! flex items-center gap-2'>
       <span className={`text-${type}`}>{NOTIFY_ICONS[type]}</span>
       {title}
     </KlTitle>
     {description && (
       <>
-        <hr className="my-2 border-text-200" />
+        <hr className='my-2 border-text-200' />
         <KlText>{description}</KlText>
       </>
     )}
@@ -113,7 +113,7 @@ export const notify = {
   ) {
     dispatch({
       type: MESSAGE_TYPES.SUCCESS,
-      content: buildNotifyContent("success", title, description),
+      content: buildNotifyContent('success', title, description),
       duration,
       onClose,
       icon: <span />,
@@ -127,7 +127,7 @@ export const notify = {
   ) {
     dispatch({
       type: MESSAGE_TYPES.ERROR,
-      content: buildNotifyContent("error", title, description),
+      content: buildNotifyContent('error', title, description),
       duration,
       onClose,
       icon: <span />,
@@ -141,7 +141,7 @@ export const notify = {
   ) {
     dispatch({
       type: MESSAGE_TYPES.WARNING,
-      content: buildNotifyContent("warning", title, description),
+      content: buildNotifyContent('warning', title, description),
       duration,
       onClose,
       icon: <span />,
@@ -155,7 +155,7 @@ export const notify = {
   ) {
     dispatch({
       type: MESSAGE_TYPES.INFO,
-      content: buildNotifyContent("info", title, description),
+      content: buildNotifyContent('info', title, description),
       duration,
       onClose,
       icon: <span />,
