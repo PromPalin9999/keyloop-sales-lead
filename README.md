@@ -13,6 +13,10 @@ is consumed the same way a mock would have been, and it demonstrates real persis
 database-enforced authorization instead of simulating it. The reasoning is written up in
 full in System Design Document (Keyloop_System_Design_Document_Ngo_Ngoc_Long.pdf).
 
+System Design Document (Google Drive link): https://drive.google.com/file/d/1_rx8TL2RwV2J9mWiQ91oy22jpMLr6xtM/view?usp=sharing
+
+Video Submission (Google Drive link): https://drive.google.com/file/d/1ETQJPliNpsDtqB_2bnlsIKAxcU3z7ic2/view?usp=drive_link
+
 
 Core requirements covered
 
@@ -129,6 +133,8 @@ Supabase development project — proposing SQL, applying it as a migration, runn
 queries, and checking RLS behavior against live Postgres rather than producing untested
 SQL text. That workflow, and the reasoning for using a real Supabase backend instead of a
 mock, is documented in System Design Document (Keyloop_System_Design_Document_Ngo_Ngoc_Long.pdf).
+
+System Design Document (Google Drive link): https://drive.google.com/file/d/1_rx8TL2RwV2J9mWiQ91oy22jpMLr6xtM/view?usp=sharing
 
 Verifying and refining AI output
 
