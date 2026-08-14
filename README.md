@@ -75,6 +75,25 @@ npm run dev
 
 The app runs at http://localhost:3809 (see vite.config.ts).
 
+Test accounts
+
+The login screen has one-click "DEV ADMIN LOGIN" / "DEV SALES_1 LOGIN" buttons (shown when
+VITE_IS_SANDBOX=true) for the two most-used accounts:
+
+- Admin — ywwh5nh85o@ozsaip.com
+- Salesperson (sale1) — sale1@example.com, 7 leads assigned
+
+For a second salesperson to verify Row Level Security actually isolates leads
+per-assignee (not just admin-vs-one-salesperson), log in manually with:
+
+- Salesperson (Michael Anderson) — michael.anderson@example.com, 3 leads assigned,
+  password: KeyloopSales@9999 (same password as the other sandbox accounts)
+
+Logging in as sale1 and as Michael Anderson should each show only their own assigned
+leads in the Lead Inbox — this is enforced by the `leads` RLS policy (System Design
+Document, Section 5.1 Security — Keyloop_System_Design_Document_Ngo_Ngoc_Long.pdf), not
+by frontend filtering.
+
 
 Build & preview
 
